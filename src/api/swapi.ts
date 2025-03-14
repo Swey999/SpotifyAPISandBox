@@ -13,15 +13,18 @@ interface Planet {
 
 export const getAllPlanets = async (): Promise<Planet[]> => {
   let planets: Planet[] = [];
-  let url = '/planets/';  // API endpoint for planets
-  
+  let url: string | null = 'planets/';  // ✅ Fix: No leading slash
+
   try {
     while (url) {
-      const response = await swapi.get(url);
-      planets = planets.concat(response.data.results);
-      url = response.data.next ? new URL(response.data.next).pathname : '';
+      console.log("Fetching data from:", swapi.defaults.baseURL + '/' + url);
+      
+      const response: { data: { results: Planet[]; next: string | null } } = await swapi.get(url);  // ✅ Explicit type
+
+      planets = [...planets, ...response.data.results]; 
+      url = response.data.next; // ✅ Correct type handling
     }
-    
+
     return planets;
   } catch (error) {
     console.error("Error fetching planets:", error);

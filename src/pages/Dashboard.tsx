@@ -51,10 +51,9 @@ const Dashboard: React.FC = () => {
         </table>
         </section>
         
-        <section>
-        <h2>Planet Information</h2>
+        {/* <section>
         <PlanetInfo />
-        </section>
+        </section> */}
       </div>
   );
 };
