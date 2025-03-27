@@ -31,6 +31,10 @@
   margin-top: 20PX;
 }
 
+.navbar-item-img {
+  height: 80px; /* Adjust size */
+  width: 80px; /* Adjust size */
+}
 
 
 

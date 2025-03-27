@@ -13,7 +13,7 @@ const Home: React.FC = () => {
                     <a href="#" className="button is-dark mr-2">Start Here!</a>
                     <a href="#" className="button">Our Features</a>
                 </div>
-            <div className="box">I'm in a box.</div>
+            <div className="box">I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.</div>
         </div>
     );
 };
