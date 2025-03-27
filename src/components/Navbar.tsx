@@ -1,13 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import "../styles/App.css";
 import vibecheck from "../assets/vibecheck.png";
 
 const Navbar: React.FC = () => {
   const [isBurgerActive, setIsBurgerActive] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleBurgerMenu = () => {
     setIsBurgerActive(!isBurgerActive);
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:5000/auth/status", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setIsLoggedIn(data.loggedIn))
+      .catch((error) => console.error("Error checking login status:", error));
+  }, []);
+
+  const handleLogout = async () => {
+    // Call backend to handle logout and clear cookies
+    await fetch("http://localhost:5000/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    // Update the state and UI accordingly
+    setIsLoggedIn(false); // Update the logged-in state
+    window.location.reload(); // Refresh the page to reflect the changes
   };
 
   return (
@@ -58,14 +78,17 @@ const Navbar: React.FC = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <div className="buttons">
-              <a className="button" href="/signup">
-                <strong>Sign up</strong>
-              </a>
-              <a className="button is-light" href="/login">
-                Log in
-              </a>
-            </div>
+          <div className="buttons">
+                {isLoggedIn ? (
+                  <button className="button is-light" onClick={handleLogout}>
+                    Log out
+                  </button>
+                ) : (
+                  <a className="button is-primary" href="http://localhost:5000/auth/login">
+                    Log in with Spotify
+                  </a>
+                )}
+              </div>
           </div>
         </div>
       </div>
