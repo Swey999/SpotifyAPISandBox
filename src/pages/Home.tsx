@@ -65,6 +65,18 @@ const Home: React.FC = () => {
             <div className="box">I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.I'm in a box.</div>
         
       <div className="box">
+        <h2 className="title is-4">Your Profile</h2>
+        <ul>
+          <li><strong>Name:</strong> {userProfile?.display_name}</li>
+          <li><strong>Email:</strong> {userProfile?.email}</li>
+          <li><strong>Country:</strong> {userProfile?.country}</li>
+          <li><strong>Followers:</strong> {userProfile?.followers.total}</li>
+          <li><strong>Spotify URL:</strong> <a href={userProfile?.external_urls.spotify} target="_blank" rel="noopener noreferrer">{userProfile?.external_urls.spotify}</a></li>
+        </ul>
+      </div>
+
+
+      <div className="box">
         <h2 className="title is-4">Your Top Tracks 🎧</h2>
         {topTracks.length === 0 ? (
           <p>Loading your top songs...</p>
@@ -82,20 +94,7 @@ const Home: React.FC = () => {
         )}
       </div>
 
-      <div className="box">
-        <h2 className="title is-4">Your Profile</h2>
-        <ul>
-          <li><strong>Name:</strong> {userProfile?.display_name}</li>
-          <li><strong>Email:</strong> {userProfile?.email}</li>
-          <li><strong>Country:</strong> {userProfile?.country}</li>
-          <li><strong>Followers:</strong> {userProfile?.followers.total}</li>
-          <li><strong>Spotify URL:</strong> <a href={userProfile?.external_urls.spotify} target="_blank" rel="noopener noreferrer">{userProfile?.external_urls.spotify}</a></li>
-        </ul>
-      </div>
-        
-        
-        
-        
+      
         </div>
         
     );
