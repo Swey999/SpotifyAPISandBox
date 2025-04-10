@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 import cookieParser from "cookie-parser";
+import topTracksRoutes from "./routes/topTracks"; // import the route
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const state = Math.random().toString(36).substring(7);
 const REDIRECT_URI = "http://localhost:5000/auth/callback";
 
 interface SpotifyTokenResponse {
@@ -31,7 +33,12 @@ interface SpotifyTokenResponse {
 // 🔹 Redirect User to Spotify for Login
 app.get("/auth/login", (_req: Request, res: Response) => {
     const scope = "user-read-private user-read-email";
-    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${SPOTIFY_CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    const authUrl = `https://accounts.spotify.com/authorize?` +
+  `response_type=code&` +
+  `client_id=${SPOTIFY_CLIENT_ID}&` +
+  `scope=user-read-email user-read-private user-top-read&` +
+  `redirect_uri=${REDIRECT_URI}&` +
+  `state=${state}`;
     res.redirect(authUrl);
 });
 
@@ -82,6 +89,7 @@ app.get("/auth/callback", async (req: Request, res: Response): Promise<void> => 
     }
 });
 
+
 // 🔹 Logout & Clear Cookies
 app.post("/auth/logout", (req: Request, res: Response) => {
     res.clearCookie("spotify_access_token", {
@@ -93,6 +101,14 @@ app.post("/auth/logout", (req: Request, res: Response) => {
   
     res.status(200).send({ message: "Logged out successfully" });
   });
+
+  app.use("/auth", topTracksRoutes); 
+
+
+
+
+
+
 
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
