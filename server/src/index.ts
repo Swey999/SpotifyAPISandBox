@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import fetch from "node-fetch";
 import cookieParser from "cookie-parser";
 import topTracksRoutes from "./routes/topTracks"; // import the route
+import userProfileRoutes from "./routes/userProfile"; // import the route
 
 dotenv.config();
 
@@ -103,6 +104,7 @@ app.post("/auth/logout", (req: Request, res: Response) => {
   });
 
   app.use("/auth", topTracksRoutes); 
+  app.use("/auth", userProfileRoutes); 
 
 
 
