@@ -8,8 +8,8 @@ import Footer from "./components/Footer";
 const App: React.FC = () => {
   return ( 
     <>
-      <Navbar />  {/* Navbar stays at the top */}
       <div className="container">
+      <Navbar />  {/* Navbar stays at the top */}
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>

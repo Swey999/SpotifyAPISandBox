@@ -19,80 +19,65 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleLogout = async () => {
-    // Call backend to handle logout and clear cookies
     await fetch("http://localhost:5000/auth/logout", {
       method: "POST",
       credentials: "include",
     });
 
-    // Update the state and UI accordingly
-    setIsLoggedIn(false); // Update the logged-in state
-    window.location.reload(); // Refresh the page to reflect the changes
+    setIsLoggedIn(false);
+    window.location.reload();
   };
 
   return (
-    <nav className="navbar" role="navigation" aria-label="main navigation">
-      <div className="container">
-
-      <div className="navbar-brand" >
-        <a className="navbar-item-img on-hover" href="/" >
-          <img src={vibecheck} alt="VibeCheck"/>
+    <nav className="navbar is-spaced" role="navigation" aria-label="main navigation">
+      {/* BRAND: Logo and Burger */}
+      <div className="navbar-brand">
+        {/* Logo */}
+        <a className="navbar-item" href="/" style={{ maxWidth: "200px", width: "200px", maxHeight: "200px", height: "200px", pointerEvents: "none" }}>
+          <img src={vibecheck} alt="VibeCheck" style={{ maxHeight: "80px", width: "80px", height: "80px" }} />
         </a>
 
+        {/* Burger icon */}
         <a
           role="button"
           className={`navbar-burger ${isBurgerActive ? "is-active" : ""}`}
           aria-label="menu"
           aria-expanded={isBurgerActive ? "true" : "false"}
+          data-target="navbarMenu"
           onClick={toggleBurgerMenu}
-          >
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div
-        id="navbarBasicExample"
-        className={`navbar-menu ${isBurgerActive ? "is-active" : ""}`}
-        >
-        
-        <div
-          className={`navbar-start ${
-            isBurgerActive ? "" : "is-flex is-justify-content-center is-align-items-center"
-          }`}
-          style={{ flex: 1 }}
-          >
-          
-          <a className="navbar-item" href="/">
-            Home
-          </a>
-
-          <a className="navbar-item" href="/documentation">
-            Documentation
-          </a>
-          <a className="navbar-item" href="#">
-            More
-          </a>
+      {/* MENU: Links and buttons */}
+      <div id="navbarMenu" className={`navbar-menu ${isBurgerActive ? "is-active" : ""}`}>
+        {/* Centered Nav Links for Desktop */}
+        <div className="navbar-start is-flex-grow-1 is-justify-content-center">
+          <a className="navbar-item" href="/">Home</a>
+          <a className="navbar-item" href="/documentation">Documentation</a>
+          <a className="navbar-item" href="#">More</a>
         </div>
 
-        <div className="navbar-end">
+        {/* Right Spacer: Buttons */}
+        <div className="navbar-end" style={{ maxWidth: "200px", width: "200px" }}>
           <div className="navbar-item">
-          <div className="buttons">
-                {isLoggedIn ? (
-                  <button className="button is-light" onClick={handleLogout}>
-                    Log out
-                  </button>
-                ) : (
-                  <a className="button is-primary" href="http://localhost:5000/auth/login">
-                    Log in with Spotify
-                  </a>
-                )}
-              </div>
+            <div className="buttons is-flex is-justify-content-center">
+              {isLoggedIn ? (
+                <button className="button is-light" onClick={handleLogout}>
+                  Log out
+                </button>
+              ) : (
+                <a className="button is-primary" href="http://localhost:5000/auth/login">
+                  Log in with Spotify
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </nav>
   );
 };
