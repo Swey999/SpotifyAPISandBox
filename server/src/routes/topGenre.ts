@@ -1,12 +1,13 @@
-import express, { Request, Response } from "express";
+import express , { Request, Response } from "express";
 import axios from "axios";
+import { off } from "process";
 
 const router = express.Router();
 
 // Define the top-tracks route
-router.get("/top-tracks", async (req: Request, res: Response) => {
+router.get("/top-genres", async (req: Request, res: Response) => {
   const accessToken = req.cookies?.spotify_access_token;
-  const timeRange = req.query.time_range || "short_term"; // default if not provided
+  
 
   if (!accessToken) {
     res.status(401).json({ error: "Unauthorized" });
@@ -14,13 +15,13 @@ router.get("/top-tracks", async (req: Request, res: Response) => {
   }
 
   try {
-    const response = await axios.get("https://api.spotify.com/v1/me/top/tracks", {
+    const response = await axios.get("https://api.spotify.com/v1/me/top/artists", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        limit: 20,
-        time_range: timeRange, // or "medium_term" or "long_term"
+        limit: 50,
+        time_range: "short_term", // or "medium_term" or "long_term"
       },
     });
 

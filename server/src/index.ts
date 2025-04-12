@@ -6,6 +6,7 @@ import fetch from "node-fetch";
 import cookieParser from "cookie-parser";
 import topTracksRoutes from "./routes/topTracks"; // import the route
 import userProfileRoutes from "./routes/userProfile"; // import the route
+import topGenreRoutes from "./routes/topGenre"; // import the route
 
 dotenv.config();
 
@@ -105,6 +106,7 @@ app.post("/auth/logout", (req: Request, res: Response) => {
 
   app.use("/auth", topTracksRoutes); 
   app.use("/auth", userProfileRoutes); 
+  app.use("/auth", topGenreRoutes); // Add this line to use the topGenre route
 
 
 
