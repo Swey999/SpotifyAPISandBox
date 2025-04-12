@@ -57,8 +57,8 @@ const Navbar: React.FC = () => {
         {/* Centered Nav Links for Desktop */}
         <div className="navbar-start is-flex-grow-1 is-justify-content-center">
           <a className="navbar-item" href="/">Home</a>
-          <a className="navbar-item" href="/documentation">Features</a>
-          <a className="navbar-item" href="#">Who am i?</a>
+          <a className="navbar-item" href="/Features">Features</a>
+          <a className="navbar-item" href="/About">Who am i?</a>
         </div>
 
         {/* Right Spacer: Buttons */}
