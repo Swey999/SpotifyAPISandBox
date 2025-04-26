@@ -2,6 +2,14 @@ import "../styles/App.css";
 import "../styles/index.css";
 import React, { useState, useEffect } from "react";
 import vibrantPicture from "../assets/vibrantPicture.jpg";
+import BarChart from '../components/BarChart';
+import MarimekkoChart from "../components/MarimekkoChart";
+import Rechart from "../components/ReCharts";
+import Chartjs from "../components/Chartjsframwork";
+
+// import { Radar } from "react-chartjs-2";
+// import { Chart as ChartJS, RadialLinearScale, CategoryScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement } from "chart.js";
+
 
 const Home: React.FC = () => {
   const [topTracks, setTopTracks] = useState<any[]>([]);
@@ -12,6 +20,10 @@ const Home: React.FC = () => {
 
   const [timeRange, setTimeRange] = useState("short_term");
 
+  const [steamid, setSteamId] = useState("");
+
+  const [steamGames, setSteamGames] = useState<any[]>([]);
+
   // Fetch top tracks data from the backend
   useEffect(() => {
     const fetchTopTracks = async () => {
@@ -19,18 +31,102 @@ const Home: React.FC = () => {
         const res = await fetch(`http://localhost:5000/auth/top-tracks?time_range=${timeRange}`, {
           credentials: "include",
         });
-
+        
         if (!res.ok) throw new Error("Failed to fetch tracks");
-
+        
         const data = await res.json();
         setTopTracks(data.items); // Save the array of top tracks
       } catch (error) {
         console.error("Error fetching top tracks:", error);
       }
     };
-
+    
     fetchTopTracks();
   }, [timeRange]);
+
+  useEffect(() => {
+    const fetchSteamGames = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/auth/steam-games?steamid=${steamid}`, {
+          credentials: "include",
+        });
+        
+        if (!res.ok) throw new Error("Failed to Steam Games");
+
+        const data = await res.json();
+        
+        console.log("Steam Games", data)
+        setSteamGames(data.response?.games || []);
+      } catch (error) {
+        console.error("Error fetching Steam Games:", error);
+      }
+    }
+    fetchSteamGames();
+  }, [steamid]);
+  
+  // ChartJS.register(
+  //   RadialLinearScale, 
+  //   CategoryScale, 
+  //   BarElement, 
+  //   Title, 
+  //   Tooltip, 
+  //   Legend, 
+  //   PointElement, 
+  //   LineElement
+  // );
+
+//  useEffect(() => {
+//   const fetchAudioFeatures = async () => {
+//     if (topTracks.length > 0) {
+//       setLoading(true);
+//       try {
+//         const trackIds = topTracks.map((item) => item.id).join(",");
+        
+//         // Properly encode query params
+//         const url = new URL("http://localhost:5000/auth/audio-features");
+//         url.searchParams.set("ids", trackIds);
+
+//         const res = await fetch(url.toString(), {
+//           credentials: "include",
+//         });
+
+//         console.log("Track IDs:", trackIds);
+//         if (!res.ok) throw new Error("Failed to fetch audio features");
+
+//         const data = await res.json();
+//         setAudioFeatures(data.audio_features);
+//         setLoading(false);
+//       } catch (error) {
+//         console.error("Error fetching audio features:", error);
+//         setLoading(false);
+//       }
+//     }
+//   };
+
+//   fetchAudioFeatures();
+// }, [topTracks]);
+
+  
+  
+  
+
+  // Generate chart data only when audioFeatures has data
+  // const chartData = audioFeatures.length > 0 ? {
+  //   labels: ["Energy", "Danceability", "Valence"],
+  //   datasets: [
+  //     {
+  //       label: "Mood Profile",
+  //       data: [
+  //         audioFeatures.reduce((acc, cur) => acc + cur.energy, 0) / audioFeatures.length,
+  //         audioFeatures.reduce((acc, cur) => acc + cur.danceability, 0) / audioFeatures.length,
+  //         audioFeatures.reduce((acc, cur) => acc + cur.valence, 0) / audioFeatures.length,
+  //       ],
+  //       backgroundColor: "rgba(54, 162, 235, 0.2)",
+  //       borderColor: "rgba(54, 162, 235, 1)",
+  //       borderWidth: 1,
+  //     }
+  //   ]
+  // } : { labels: [], datasets: [] };
 
   useEffect(() => {
     const fetchTopGenres = async () => {
@@ -80,6 +176,10 @@ const Home: React.FC = () => {
 
     fetchUserProfile();
   }, []);
+
+  const totalHoursPlayed = steamGames.reduce((sum, game) => {
+    return sum + (game.playtime_forever || 0) / 60;
+  }, 0);
 
   return (
     <div className="container" style={{ marginTop: "50px" }}>
@@ -218,7 +318,7 @@ const Home: React.FC = () => {
           <p>Loading your top songs...</p>
         ) : (
           <div className="columns is-multiline is-mobile hover">
-            {topTracks.map((track, index) => (
+            {topTracks.slice(0, 20).map((track, index) => (
               <div
                 className="column is-one-fifth"
                 key={track.id}
@@ -252,7 +352,7 @@ const Home: React.FC = () => {
                       {index + 1}. {track.name}
                     </p>
                     <p
-                      className="subtitle is-7"
+                      className="subtitle is-7 mt-2"
                       style={{
                         fontSize: "0.75rem",
                         overflowWrap: "break-word",
@@ -267,6 +367,86 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
+
+      <div className="box">
+      <h2 className="title is-3 has-text-weight-bold has-text-centered mt-5">
+        Want to see how many hours you've wasted on Steam? 👀
+      </h2>
+      <p className="subtitle is-6 mt-4">Enter your Steam ID below to find out.</p>
+        {/* Search Input */}
+        <div className="column has-text-centered ">
+
+        <input
+          type="text"
+          placeholder="Enter your Steam ID"
+          value={steamid}
+          onChange={(e) => setSteamId(e.target.value)}
+          className="input mb-2"
+          style={{ width: "300px" }}
+          />
+          </div>
+
+        {/* Get your time spent playing games on Steam! */}
+        <div className="has-text-centered mt-5 mb-5">
+          {steamid === "" ? (
+            <p className="has-text-grey">Awaiting Steam ID...</p>
+          ) : steamGames.length === 0 ? (
+            <p className="has-text-grey">No games found for this Steam ID.</p>
+          ) : (
+            <>
+              <p className="title is-2 has-text-danger has-text-weight-bold">
+                You’ve wasted {totalHoursPlayed.toFixed(2)} hours on Steam.
+              </p>
+              <p className="title is-2 has-text-weight-bold mb-5">
+                That is approximately {Math.floor(totalHoursPlayed / 24)} days.
+              </p>
+              <p className="subtitle is-5">Across {steamGames.length} games.</p>
+            </>
+          )}
+        </div>
+        
+
+      </div>
+{/* 
+      Add loading spinner or message
+      {loading && <p>Loading your mood profile...</p>}
+
+      <div className="box">
+        <div style={{ width: "80%", margin: "auto" }}>
+          <h2>Your Music Mood Profile</h2>
+          {audioFeatures.length > 0 ? (
+            <Radar data={chartData} />
+          ) : (
+            <p>No data available for mood profile.</p>
+          )}
+        </div>
+      </div> */}
+    <div className="box">
+        This is a test for the Nivo Bar chart
+        <h2>Top 5 Genres</h2>
+        <BarChart />
+    </div>
+
+    <div className="box">
+        This is a test for the Nivo Marimekko chart
+      <MarimekkoChart />
+    </div>
+    
+    <div className="box">
+        This is a test for the ReCharts Bar chart
+      <Rechart />
+    </div>
+
+    <div className="box">
+        This is a test for the Chart.js Bar chart
+      <h2 className="title is-3">342 kWh</h2>
+      <h3 className="title is-4">21,08 max / 11,4 gns</h3>
+      <Chartjs />
+    </div>
+
+
+
+
     </div>
   );
 };

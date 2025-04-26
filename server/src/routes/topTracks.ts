@@ -19,12 +19,15 @@ router.get("/top-tracks", async (req: Request, res: Response) => {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        limit: 20,
+        limit: 50,
         time_range: timeRange, // or "medium_term" or "long_term"
       },
     });
 
     res.json(response.data);  // Send the Spotify data back to the client
+    
+
+
   } catch (error: any) {
     console.error("Error fetching top tracks:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to fetch top tracks" });

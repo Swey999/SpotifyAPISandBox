@@ -1,0 +1,53 @@
+import express , { Request, Response } from "express";
+import axios from "axios";
+import { off } from "process";
+
+const router = express.Router();
+
+router.get("/audio-features", async (req: Request, res: Response) => {
+    const accessToken = req.cookies?.spotify_access_token;
+    const trackIds = encodeURIComponent(req.query.ids as string)
+
+    if (!accessToken || !trackIds) {
+      res.status(401).json({ error: "Unauthorized: Missing access token or track IDs" });
+    }
+
+    console.log("Track IDs:", trackIds); // Log track IDs for debugging
+
+
+    // Check if access token has the correct scopes
+    console.log("Access Token Scopes:", accessToken.scope); // Log access token scopes for debugging
+
+    try {
+      const response = await axios.get("https://api.spotify.com/v1/audio-features", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          ids: trackIds,
+        },
+      });
+
+      
+    // Optional: log to debug
+    console.log("Spotify Response:", response.data);
+      
+      
+      res.json(response.data);
+    } catch (error: any) {
+      console.error("Spotify API error:", error.response?.data || error.message);
+      console.error("Full error response:", error.response);  // Log the full error response
+    
+  
+      // Return Spotify error for clarity
+      res.status(500).json({
+        error: "Failed to fetch audio features",
+        details: error.response?.data || error.message,
+      });
+    }
+  });
+  
+  
+
+
+export default router;

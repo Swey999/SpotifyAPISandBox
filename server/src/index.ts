@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import topTracksRoutes from "./routes/topTracks"; // import the route
 import userProfileRoutes from "./routes/userProfile"; // import the route
 import topGenreRoutes from "./routes/topGenre"; // import the route
+import steamGamesRoutes from "./routes/getSteamOwnedGames"; // import the route
+// import audioFeaturesRoutes from "./routes/audioFeaturesg"; // import the route
 
 dotenv.config();
 
@@ -31,16 +33,25 @@ interface SpotifyTokenResponse {
     error?: string;
 }
 
+const scope = [
+    "user-read-email",
+    "user-read-private",
+    "user-top-read",
+    "user-library-read",
+    "playlist-read-private",
+    "playlist-read-collaborative"
+].join(" ");
+
+
 
 // 🔹 Redirect User to Spotify for Login
 app.get("/auth/login", (_req: Request, res: Response) => {
-    const scope = "user-read-private user-read-email";
     const authUrl = `https://accounts.spotify.com/authorize?` +
-  `response_type=code&` +
-  `client_id=${SPOTIFY_CLIENT_ID}&` +
-  `scope=user-read-email user-read-private user-top-read&` +
-  `redirect_uri=${REDIRECT_URI}&` +
-  `state=${state}`;
+    `response_type=code&` +
+    `client_id=${SPOTIFY_CLIENT_ID}&` +
+    `scope=${encodeURIComponent(scope)}&` +
+    `redirect_uri=${REDIRECT_URI}&` +
+    `state=${state}`;
     res.redirect(authUrl);
 });
 
@@ -55,7 +66,7 @@ app.get("/auth/callback", async (req: Request, res: Response): Promise<void> => 
             return;
         }
         console.log("Authorization code received:", code);
-
+        
         // Fetch access token from Spotify
         const response = await fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
@@ -69,10 +80,10 @@ app.get("/auth/callback", async (req: Request, res: Response): Promise<void> => 
                 redirect_uri: "http://localhost:5000/auth/callback",
             }),
         });
-
+        
         const data = (await response.json()) as SpotifyTokenResponse;
         console.log("Spotify Response:", data);
-
+        
         if (data.access_token) {
             res.cookie("spotify_access_token", data.access_token, {
                 httpOnly: true,
@@ -80,7 +91,7 @@ app.get("/auth/callback", async (req: Request, res: Response): Promise<void> => 
                 sameSite: "lax",
                 maxAge: 3600 * 1000, // 1 hour
             });
-
+            
             res.redirect("http://localhost:3000");
         } else {
             res.status(400).json({ error: "Failed to authenticate" });
@@ -95,18 +106,21 @@ app.get("/auth/callback", async (req: Request, res: Response): Promise<void> => 
 // 🔹 Logout & Clear Cookies
 app.post("/auth/logout", (req: Request, res: Response) => {
     res.clearCookie("spotify_access_token", {
-      httpOnly: true,
-      secure: false, // Set this to true if you're using https
-      sameSite: "lax",
-      path: "/" // Path should match the path where the cookie was set
+        httpOnly: true,
+        secure: false, // Set this to true if you're using https
+        sameSite: "lax",
+        path: "/" // Path should match the path where the cookie was set
     });
-  
+    
     res.status(200).send({ message: "Logged out successfully" });
-  });
+});
 
-  app.use("/auth", topTracksRoutes); 
-  app.use("/auth", userProfileRoutes); 
-  app.use("/auth", topGenreRoutes); // Add this line to use the topGenre route
+// app.use("/auth", audioFeaturesRoutes); // Add this line to use the AudioFeatures route
+app.use("/auth", topTracksRoutes); 
+app.use("/auth", userProfileRoutes); 
+app.use("/auth", topGenreRoutes); // Add this line to use the topGenre route
+app.use("/auth", steamGamesRoutes); // Add this line to use the steamGames route
+
 
 
 
